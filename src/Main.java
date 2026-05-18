@@ -80,6 +80,8 @@ public class Main {
         System.out.println("CSV gerado em: " + CSV_OUTPUT);
         System.out.println("Graficos gerados em: " + CHARTS_OUTPUT_DIR);
         System.out.println();
+        printSearchedWords(results);
+        System.out.println();
         printSummary(results);
     }
 
@@ -115,22 +117,35 @@ public class Main {
         Map<String, AverageAccumulator> averages = new TreeMap<>();
 
         for (BenchmarkResult result : results) {
-            String key = result.fileName() + " | " + methodLabel(result);
+            String key = result.fileName() + " | " + result.word() + " | " + methodLabel(result);
             averages.computeIfAbsent(key, ignored -> new AverageAccumulator())
                     .add(result.elapsedMs(), result.occurrences());
         }
 
-        System.out.printf("%-52s %12s %14s%n", "Arquivo | Metodo", "Ocorrencias", "Media (ms)");
-        System.out.println("--------------------------------------------------------------------------------");
+        System.out.printf("%-60s %12s %14s%n", "Arquivo | Palavra | Metodo", "Ocorrencias", "Media (ms)");
+        System.out.println("----------------------------------------------------------------------------------------");
 
         averages.entrySet().stream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(entry -> System.out.printf(
                         Locale.ROOT,
-                        "%-52s %12d %14.3f%n",
+                        "%-60s %12d %14.3f%n",
                         entry.getKey(),
                         entry.getValue().occurrences(),
                         entry.getValue().averageMs()));
+    }
+
+    private static void printSearchedWords(List<BenchmarkResult> results) {
+        Map<String, String> wordsByFile = new TreeMap<>();
+
+        for (BenchmarkResult result : results) {
+            wordsByFile.put(result.fileName(), result.word());
+        }
+
+        System.out.println("Palavras buscadas:");
+        for (Map.Entry<String, String> entry : wordsByFile.entrySet()) {
+            System.out.println("  " + entry.getKey() + ": " + entry.getValue());
+        }
     }
 
     private static String methodLabel(BenchmarkResult result) {
