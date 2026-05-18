@@ -1,16 +1,12 @@
-# Arquivos internos do planejamento e enunciado
 analise_comparativa_algoritmos_paralelismo.pdf
 PLANO_IMPLEMENTACAO.md
 
-# Saidas de compilacao Java
 build/
 *.class
 
-# Arquivos gerados durante os experimentos
 resultados/*.csv
 resultados/graficos/*.svg
 
-# Arquivos do sistema/editor
 .DS_Store
 Thumbs.db
 *.swp
